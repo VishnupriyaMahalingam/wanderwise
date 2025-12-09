@@ -1,0 +1,15 @@
+{
+  "title": "Destinations",
+  "uid": "destination",
+  "schema": [
+    { "display_name": "Name", "uid": "name", "data_type": "text", "mandatory": true },
+    { "display_name": "Slug", "uid": "slug", "data_type": "text", "mandatory": true },
+    { "display_name": "Region", "uid": "region", "data_type": "reference", "reference_to": ["region"] },
+    { "display_name": "Short Description", "uid": "short_description", "data_type": "text" },
+    { "display_name": "Long Description", "uid": "long_description", "data_type": "rich_text" },
+    { "display_name": "Cover Image", "uid": "cover_image", "data_type": "file" },
+    { "display_name": "Gallery", "uid": "gallery", "data_type": "file" },
+    { "display_name": "Best Time To Visit", "uid": "best_time", "data_type": "text" },
+    { "display_name": "Approx Cost", "uid": "approx_cost", "data_type": "number" }
+  ]
+}

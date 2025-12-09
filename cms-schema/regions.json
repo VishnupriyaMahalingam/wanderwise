@@ -1,0 +1,10 @@
+{
+  "title": "Regions",
+  "uid": "region",
+  "schema": [
+    { "display_name": "Title", "uid": "title", "data_type": "text", "mandatory": true },
+    { "display_name": "Slug", "uid": "slug", "data_type": "text", "mandatory": true },
+    { "display_name": "Description", "uid": "description", "data_type": "text" },
+    { "display_name": "Image", "uid": "image", "data_type": "file" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Packages",
+  "uid": "package",
+  "schema": [
+    { "display_name": "Title", "uid": "title", "data_type": "text", "mandatory": true },
+    { "display_name": "Slug", "uid": "slug", "data_type": "text", "mandatory": true },
+    { "display_name": "Destination", "uid": "destination", "data_type": "reference", "reference_to": ["destination"] },
+    { "display_name": "Provider", "uid": "provider", "data_type": "text" },
+    { "display_name": "Days", "uid": "days", "data_type": "number" },
+    { "display_name": "Price", "uid": "price", "data_type": "number" },
+    { "display_name": "Description", "uid": "description", "data_type": "rich_text" }
+  ]
+}

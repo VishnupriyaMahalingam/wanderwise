@@ -1,0 +1,16 @@
+{
+  "name": "Notify Slack on Package Publish",
+  "trigger": {
+    "event": "entry.published",
+    "content_type": "package"
+  },
+  "actions": [
+    {
+      "type": "slack.postMessage",
+      "config": {
+        "channel": "#travel-alerts",
+        "message": "New package published: {{entry.title}} for {{entry.destination[0].name}} \u2014 {{entry.days}} days \u2014 Price: \u20b9{{entry.price}}"
+      }
+    }
+  ]
+}

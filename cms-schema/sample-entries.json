@@ -1,0 +1,82 @@
+{
+  "regions": [
+    {
+      "title": "India",
+      "slug": "india",
+      "description": "Incredible India",
+      "uid": "reg_india"
+    },
+    {
+      "title": "International",
+      "slug": "international",
+      "description": "Explore the world",
+      "uid": "reg_intl"
+    }
+  ],
+  "destinations": [
+    {
+      "name": "Goa",
+      "slug": "goa",
+      "short_description": "Beaches and nightlife",
+      "long_description": "<p>Sunny beaches of Goa.</p>",
+      "region": [
+        {
+          "uid": "reg_india"
+        }
+      ],
+      "cover_image": {
+        "url": "https://images.contentstack.io/placeholder/goa.jpg"
+      },
+      "uid": "dest_goa",
+      "best_time": "November to February",
+      "approx_cost": 30000
+    },
+    {
+      "name": "Paris",
+      "slug": "paris",
+      "short_description": "City of lights",
+      "long_description": "<p>Romantic walks by the Seine.</p>",
+      "region": [
+        {
+          "uid": "reg_intl"
+        }
+      ],
+      "cover_image": {
+        "url": "https://images.contentstack.io/placeholder/paris.jpg"
+      },
+      "uid": "dest_paris",
+      "best_time": "April to June",
+      "approx_cost": 80000
+    }
+  ],
+  "packages": [
+    {
+      "title": "Goa Beach Escape",
+      "slug": "goa-beach-escape",
+      "destination": [
+        {
+          "uid": "dest_goa"
+        }
+      ],
+      "provider": "Sunny Travels",
+      "days": 4,
+      "price": 15000,
+      "description": "Relaxing 4-day beach package",
+      "uid": "pkg_goa_1"
+    },
+    {
+      "title": "Paris Romantic 5N",
+      "slug": "paris-romantic-5n",
+      "destination": [
+        {
+          "uid": "dest_paris"
+        }
+      ],
+      "provider": "EuroTours",
+      "days": 5,
+      "price": 120000,
+      "description": "Romantic trip to Paris",
+      "uid": "pkg_paris_1"
+    }
+  ]
+}
