@@ -101,7 +101,7 @@ async function saveBookingToContentstack(bookingData) {
   try {
     // Create entry in Contentstack
     const response = await fetch(
-      `${apiBaseUrl}/v3/content_types/booking/entries?locale=en-us`,
+      `${apiBaseUrl}/v3/content_types/bookings/entries?locale=en-us`,
       {
         method: 'POST',
         headers: {
@@ -156,7 +156,7 @@ async function publishEntry(apiBaseUrl, apiKey, managementToken, entryUid) {
     const environment = process.env.CONTENTSTACK_ENVIRONMENT || 'development'
     
     const response = await fetch(
-      `${apiBaseUrl}/v3/content_types/booking/entries/${entryUid}/publish`,
+      `${apiBaseUrl}/v3/content_types/bookings/entries/${entryUid}/publish`,
       {
         method: 'POST',
         headers: {
