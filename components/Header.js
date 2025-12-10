@@ -67,7 +67,8 @@ export default function Header() {
                 
                 {/* India Dropdown Menu */}
                 {indiaDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl py-2 z-50 animate-fade-in-up border border-slate-100">
+                  <div className="absolute top-full left-0 pt-2 w-56 z-50">
+                    <div className="bg-white rounded-2xl shadow-2xl py-2 border border-slate-100">
                     <div className="px-4 py-2 border-b border-slate-100">
                       <Link 
                         href="/region/india" 
@@ -86,6 +87,7 @@ export default function Header() {
                         <span className="text-slate-700 font-medium">{dest.name}</span>
                       </Link>
                     ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -105,7 +107,8 @@ export default function Header() {
                 
                 {/* International Dropdown Menu */}
                 {intlDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl py-2 z-50 animate-fade-in-up border border-slate-100">
+                  <div className="absolute top-full left-0 pt-2 w-56 z-50">
+                    <div className="bg-white rounded-2xl shadow-2xl py-2 border border-slate-100">
                     <div className="px-4 py-2 border-b border-slate-100">
                       <Link 
                         href="/region/international" 
@@ -124,6 +127,7 @@ export default function Header() {
                         <span className="text-slate-700 font-medium">{dest.name}</span>
                       </Link>
                     ))}
+                    </div>
                   </div>
                 )}
               </div>
