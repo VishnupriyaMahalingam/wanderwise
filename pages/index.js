@@ -1,11 +1,15 @@
+import { useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import DestinationCard from '../components/DestinationCard'
+import TripPlannerModal from '../components/TripPlannerModal'
 import { getEntries } from '../lib/contentstack'
 
 export default function Home({ regions, destinations }) {
+  const [tripPlannerOpen, setTripPlannerOpen] = useState(false)
+
   return (
     <>
       <Head>
@@ -188,7 +192,10 @@ export default function Home({ regions, destinations }) {
               Let us help you plan the perfect trip. Browse our destinations, 
               compare packages, and book your dream vacation today.
             </p>
-            <button className="bg-emerald-900 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-emerald-800 transition-colors shadow-xl">
+            <button 
+              onClick={() => setTripPlannerOpen(true)}
+              className="bg-emerald-900 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-emerald-800 transition-colors shadow-xl hover:shadow-2xl hover:-translate-y-1 transform transition-all"
+            >
               Start Planning Now
             </button>
           </div>
@@ -196,6 +203,12 @@ export default function Home({ regions, destinations }) {
       </main>
 
       <Footer />
+
+      {/* Trip Planner Modal */}
+      <TripPlannerModal 
+        isOpen={tripPlannerOpen} 
+        onClose={() => setTripPlannerOpen(false)} 
+      />
     </>
   )
 }
