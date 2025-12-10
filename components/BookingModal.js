@@ -63,6 +63,8 @@ export default function BookingModal({ isOpen, onClose, packageData, destination
   }
 
   const handleNext = () => {
+    if (loading) return // Prevent double submission
+    
     if (step === 1 && validateStep1()) {
       setStep(2)
     } else if (step === 2 && validateStep2()) {
@@ -71,6 +73,7 @@ export default function BookingModal({ isOpen, onClose, packageData, destination
   }
 
   const handleBooking = async () => {
+    if (loading) return // Prevent double submission
     setLoading(true)
     
     try {
