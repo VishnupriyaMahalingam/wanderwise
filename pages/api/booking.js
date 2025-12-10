@@ -25,14 +25,6 @@ export default async function handler(req, res) {
     // Generate a unique booking ID
     const bookingId = 'WW' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase()
 
-    // Format the travel date
-    const formattedDate = new Date(travelDate).toLocaleDateString('en-IN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-
     // Create booking data
     const bookingData = {
       booking_id: bookingId,
@@ -40,32 +32,26 @@ export default async function handler(req, res) {
       email: email,
       phone: phone,
       package_name: packageTitle,
-      destination_name: destination,
+      destination: destination,
       travel_date: travelDate,
       duration: packageDays || 1,
       travelers: travelers,
       total_amount: totalAmount,
       provider: packageProvider || 'WanderWise',
-      special_requests: specialRequests || '',
-      formatted_date: formattedDate,
     }
 
-    // Log the booking
-    console.log('📦 New Booking:', bookingData)
+    console.log('📦 New Booking Data:', JSON.stringify(bookingData, null, 2))
 
     // Save booking to Contentstack (this triggers Automation Hub)
     const contentstackResult = await saveBookingToContentstack(bookingData)
     
-    if (contentstackResult.success) {
-      console.log('✅ Booking saved to Contentstack - Email will be sent via Automation Hub')
-    } else {
-      console.log('⚠️ Could not save to Contentstack, but booking is still confirmed')
-    }
+    console.log('📝 Contentstack Result:', JSON.stringify(contentstackResult, null, 2))
 
     return res.status(200).json({
       success: true,
       bookingId,
-      message: 'Booking confirmed successfully'
+      message: 'Booking confirmed successfully',
+      contentstackSaved: contentstackResult.success
     })
 
   } catch (error) {
@@ -82,6 +68,10 @@ async function saveBookingToContentstack(bookingData) {
   const apiKey = process.env.NEXT_PUBLIC_CONTENTSTACK_API_KEY
   const managementToken = process.env.CONTENTSTACK_MANAGEMENT_TOKEN
   
+  console.log('🔑 API Key exists:', !!apiKey)
+  console.log('🔑 Management Token exists:', !!managementToken)
+  console.log('🔑 Management Token (first 10 chars):', managementToken?.substring(0, 10))
+  
   if (!apiKey || !managementToken) {
     console.log('⚠️ Contentstack credentials not configured for booking storage')
     return { success: false, error: 'Missing credentials' }
@@ -97,45 +87,61 @@ async function saveBookingToContentstack(bookingData) {
   } else if (region === 'azure-eu') {
     apiBaseUrl = 'https://azure-eu-api.contentstack.com'
   }
+  
+  console.log('🌐 API Base URL:', apiBaseUrl)
+  console.log('🌐 Region:', region)
+
+  const entryData = {
+    entry: {
+      title: `Booking - ${bookingData.booking_id}`,
+      booking_id: bookingData.booking_id,
+      passenger_name: bookingData.passenger_name,
+      email: bookingData.email,
+      phone: bookingData.phone,
+      package_name: bookingData.package_name,
+      destination: bookingData.destination,
+      travel_date: bookingData.travel_date,
+      duration: bookingData.duration,
+      travelers: bookingData.travelers,
+      total_amount: bookingData.total_amount,
+      provider: bookingData.provider,
+    }
+  }
+
+  console.log('📤 Sending to Contentstack:', JSON.stringify(entryData, null, 2))
 
   try {
-    // Create entry in Contentstack
-    const response = await fetch(
-      `${apiBaseUrl}/v3/content_types/bookings/entries?locale=en-us`,
-      {
-        method: 'POST',
-        headers: {
-          'api_key': apiKey,
-          'authorization': managementToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          entry: {
-            title: `Booking - ${bookingData.booking_id}`,
-            booking_id: bookingData.booking_id,
-            passenger_name: bookingData.passenger_name,
-            email: bookingData.email,
-            phone: bookingData.phone,
-            package_name: bookingData.package_name,
-            destination: bookingData.destination_name,
-            travel_date: bookingData.travel_date,
-            duration: bookingData.duration,
-            travelers: bookingData.travelers,
-            total_amount: bookingData.total_amount,
-            provider: bookingData.provider,
-          }
-        }),
-      }
-    )
+    const url = `${apiBaseUrl}/v3/content_types/bookings/entries?locale=en-us`
+    console.log('🔗 Request URL:', url)
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'api_key': apiKey,
+        'authorization': managementToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(entryData),
+    })
+
+    console.log('📥 Response Status:', response.status)
+    
+    const responseText = await response.text()
+    console.log('📥 Response Body:', responseText)
 
     if (!response.ok) {
-      const errorData = await response.json()
-      console.error('Contentstack API error:', errorData)
+      let errorData
+      try {
+        errorData = JSON.parse(responseText)
+      } catch {
+        errorData = { message: responseText }
+      }
+      console.error('❌ Contentstack API error:', errorData)
       return { success: false, error: errorData }
     }
 
-    const result = await response.json()
-    console.log('📝 Entry created in Contentstack:', result.entry?.uid)
+    const result = JSON.parse(responseText)
+    console.log('✅ Entry created:', result.entry?.uid)
 
     // Auto-publish the entry to trigger Automation Hub
     if (result.entry?.uid) {
@@ -145,7 +151,7 @@ async function saveBookingToContentstack(bookingData) {
     return { success: true, entry: result.entry }
 
   } catch (error) {
-    console.error('Error saving to Contentstack:', error)
+    console.error('❌ Error saving to Contentstack:', error.message)
     return { success: false, error: error.message }
   }
 }
@@ -154,6 +160,7 @@ async function saveBookingToContentstack(bookingData) {
 async function publishEntry(apiBaseUrl, apiKey, managementToken, entryUid) {
   try {
     const environment = process.env.CONTENTSTACK_ENVIRONMENT || 'development'
+    console.log('📢 Publishing entry to environment:', environment)
     
     const response = await fetch(
       `${apiBaseUrl}/v3/content_types/bookings/entries/${entryUid}/publish`,
@@ -173,13 +180,15 @@ async function publishEntry(apiBaseUrl, apiKey, managementToken, entryUid) {
       }
     )
 
+    const responseText = await response.text()
+    console.log('📢 Publish Response:', response.status, responseText)
+
     if (response.ok) {
       console.log('✅ Entry published - Automation Hub will send email')
     } else {
-      const errorData = await response.json()
-      console.log('⚠️ Could not auto-publish:', errorData)
+      console.log('⚠️ Could not auto-publish')
     }
   } catch (error) {
-    console.error('Publish error:', error)
+    console.error('❌ Publish error:', error.message)
   }
 }
