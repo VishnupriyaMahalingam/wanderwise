@@ -101,9 +101,9 @@ async function saveBookingToContentstack(bookingData) {
       package_name: bookingData.package_name,
       destination: bookingData.destination,
       travel_date: bookingData.travel_date,
-      duration: bookingData.duration,
-      travelers: bookingData.travelers,
-      total_amount: bookingData.total_amount,
+      duration: String(bookingData.duration),
+      travelers: String(bookingData.travelers),
+      total_amount: String(bookingData.total_amount),
       provider: bookingData.provider,
     }
   }
