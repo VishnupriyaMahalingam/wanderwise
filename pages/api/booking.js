@@ -117,7 +117,7 @@ async function saveBookingToContentstack(bookingData) {
             email: bookingData.email,
             phone: bookingData.phone,
             package_name: bookingData.package_name,
-            destination_name: bookingData.destination_name,
+            destination: bookingData.destination_name,
             travel_date: bookingData.travel_date,
             duration: bookingData.duration,
             travelers: bookingData.travelers,
